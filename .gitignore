@@ -1,1 +1,6 @@
 credentials.json
+.vscode/launch.json
+.vscode/settings.json
+__pycache__/pipeline_manager.cpython-36.pyc
+__pycache__/utilities.cpython-36.pyc
+jessicads-e380037d1a95.json
