@@ -17,6 +17,13 @@ import datetime
 from utilities import upload_blob
 import gc
 
+import logging
+log_format = "%(asctime)s %(name)s %(funcName)s %(message)s"
+logging.basicConfig(filename='crawl_playersummaries.log',level=logging.INFO)
+log_handler = logging.FileHandler('crawl_playersummaries.log')
+log_handler.setFormatter(logging.Formatter(log_format))
+logger = logging.getLogger('crawl_playersummaries.log')
+logger.addHandler(log_handler)
 
 class PlayerSummaries:
     def __init__(self,start_id:int,end_time_created:str,credentials:str,gs_prefix:str):
@@ -41,6 +48,8 @@ class PlayerSummaries:
         with open(self.credentials) as outfile:
             f = json.load(outfile)
             self.api_key = f['api_key']
+        logger.info('set api key')
+
     def query_summaries(self,steamids:list,api_key):
         query = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={api_key}&steamids={steamids}'\
             .format(api_key=api_key, steamids=steamids)
@@ -65,12 +74,12 @@ class PlayerSummaries:
             except:
                 attempts += 1
                 if attempts == (limit-1):
-                    print('reach limit')
+                    logging.info('reach limit at i ={i}'.format(i=self.i))
                     time.sleep(600)
                 elif attempts == 1:
-                    time.sleep(5)
+                    time.sleep(10)
                 else:
-                    time.sleep(300)
+                    time.sleep(210)
                 if attempts == limit:
                     self.failure.append(steamids)
                     with open('data/failure.pickle', 'wb') as handle:
@@ -85,6 +94,7 @@ class PlayerSummaries:
                         return timecreated
                 except:
                     pass
+        logger.info("can't get timecreated")
         return prev_timecreated                    
                     
                     
@@ -108,12 +118,13 @@ class PlayerSummaries:
                 self.end_time = self.get_last_timecreated(player_summary_batch,self.end_time)
 
             else:
-                print("reach limit at batch {i}".format(i=i))
+                logger.info("reach limit at batch {i}".format(i=i))
             self.start_id = self.end_id
             if player_summary_batch:
                 player_summary.extend(player_summary_batch)
                 self.player_summary_batch = player_summary_batch
-
+                if i % 10 == 0:
+                    logger.info('finished batch {i}'.format(i=self.i))
                 if i % 100 == 0:
                     pickle_file_name = 'summary_{batch}.pickle'.format(batch=i//100)
                     pickle_file_path = 'data/' + pickle_file_name
@@ -122,15 +133,18 @@ class PlayerSummaries:
                     
                     player_summary = []
                     upload_blob(self.gs_prefix,pickle_file_path, pickle_file_name)
+                    logger.info('upload batch {i} to gcs'.format(i=self.i))
                     gc.collect()
             time.sleep(10)
 
         with open('data/summary_{batch}.pickle'.format(batch=(i//100)+1), 'wb') as handle:
             pickle.dump(player_summary, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        upload_blob(self.gs_prefix,'data/summary_{batch}.pickle'.format(batch=(i//100)+1),
+        upload_blob(self.gs_prefix,'data/summary_{batch}.pickle'.format(batch=(i//10)+1),
                     'summary_{batch}.pickle'.format(batch=(i//100)+1))
+        logger.info('Done')
 
         try:
             upload_blob(gs_prefix,'data/failure.pickle','failure.pickle')
+            logger.info('upload failure message')
         except:
             pass
