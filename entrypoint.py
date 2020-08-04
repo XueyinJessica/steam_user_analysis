@@ -10,7 +10,7 @@ if __name__ == '__main__':
     parser.add_argument('--start-id',type=int,help=76561197960265728)
     parser.add_argument('--end-time-created',type=str,help='2020-08-01')
     parser.add_argument('--credentials',type=str,help='eg: credentials.json')
-    parser.add_argument('--gs-prefix',type=str,help='eg: gs://crawl_steam_data')
+    parser.add_argument('--gs-prefix',type=str,help='bucket name eg: crawl_steam')
 
     args = parser.parse_args()
     print(args.end_time_created)
