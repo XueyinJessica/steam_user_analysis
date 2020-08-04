@@ -116,9 +116,8 @@ class PlayerSummaries:
             player_summary_batch = self.query_till_limit(limit=5,steamids=steamids,api_key=self.api_key)
             if player_summary_batch:
                 self.end_time = self.get_last_timecreated(player_summary_batch,self.end_time)
-
             else:
-                logger.info("reach limit at batch {i}".format(i=i))
+                logger.info("can't update time created at batch {i}".format(i=i))
             self.start_id = self.end_id
             if player_summary_batch:
                 player_summary.extend(player_summary_batch)
