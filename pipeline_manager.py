@@ -138,7 +138,7 @@ class PlayerSummaries:
 
         with open('data/summary_{batch}.pickle'.format(batch=(i//100)+1), 'wb') as handle:
             pickle.dump(player_summary, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        upload_blob(self.gs_prefix,'data/summary_{batch}.pickle'.format(batch=(i//10)+1),
+        upload_blob(self.gs_prefix,'data/summary_{batch}.pickle'.format(batch=(i//100)+1),
                     'summary_{batch}.pickle'.format(batch=(i//100)+1))
         logger.info('Done')
 
