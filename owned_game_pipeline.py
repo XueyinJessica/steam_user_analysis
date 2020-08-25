@@ -28,6 +28,7 @@ class GetOwnedGames:
         self.user_game_info = []
         
     def get_steamids(self):
+        """
         summaries = glob.glob("data/summary_*.pickle")
         all_summaries = []
         for summary in summaries:
@@ -44,7 +45,9 @@ class GetOwnedGames:
                     pass
         us_id = [player['steamid'] for player in us_visible]
         self.steamids = us_id
-        
+        """
+        with open('selected_steamid.pickle', 'rb') as f:
+            self.steamids = pickle.load(f)
         logger.info('got steamid, total steamids: {ts}'.format(ts=len(self.steamids)))
 
     def get_api(self):
