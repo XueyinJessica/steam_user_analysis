@@ -60,14 +60,18 @@ class GetOwnedGames:
         """
         query 1 player and sleep for n seconds
         """
-        query_get_game = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={api_key}&steamid={steamid}&include_played_free_games=1&format=json".format(api_key=self.api_key,steamid=steamid)
-        r = requests.get(query_get_game)
-        data = json.loads(r.text)
-        if data['response']:
+        try:
+            query_get_game = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={api_key}&steamid={steamid}&include_played_free_games=1&format=json".format(api_key=self.api_key,steamid=steamid)
+            r = requests.get(query_get_game)
+            data = json.loads(r.text)
+            if data['response']:
+                self.c += 1
+                self.cn = 0
+                self.user_game_info.append((steamid,data['response']))
+            else:
+                self.cn += 1
+        except:
             self.c += 1
-            self.cn = 0
-            self.user_game_info.append((steamid,data['response']))
-        else:
             self.cn += 1
         time.sleep(self.speed)
     
@@ -80,12 +84,13 @@ class GetOwnedGames:
         for steamid in self.steamids:
             i += 1
             self.query(steamid)
+            logger.info('tried {i} players, got {c} players data'.format(i=i,c=self.c))
             if self.cn == 30:
                 time.sleep(300)
             if self.cn == 50:
                 time.sleep(600)
             if self.c % 10 == 0 and self.cn == 0:
-                logger.info('tried {i} players, got {c} players data'.format(i=i,c=self.c))
+                
                 pickle_file_name = 'owned_game_{batch}.pickle'.format(batch=self.c//10)
                 pickle_file_path = 'data/' + pickle_file_name
                 with open(pickle_file_path, 'wb') as handle:
