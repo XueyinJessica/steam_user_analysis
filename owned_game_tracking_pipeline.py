@@ -65,16 +65,18 @@ class GetOwnedGames:
             except:
                 attempts += 1
                 if attempts == (limit-1):
-                    logging.info('reach limit at i ={i}'.format(i=self.i))
+                    logging.info('reach limit at i ={i}'.format(i=limit))
                     time.sleep(600)
                 elif attempts == 1:
                     time.sleep(10)
                 else:
+                    logging.info('{n}th attempt for player {steamid}'.format(n=attempts,steamid=steamid))
                     time.sleep(210)
 
     
     def run(self):
         self.get_steamids()
+        self.get_api()
         print(self.steamids[0])
         #progress
         i = 1
