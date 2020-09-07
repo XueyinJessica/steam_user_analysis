@@ -88,5 +88,5 @@ class GetOwnedGames:
                 self.user_game_info = []
             i += 1
         with open(pickle_file_path, 'wb') as handle:
-            pickle_file_name = 'owned_game_{starting_date}_{batch}.pickle'.format(starting_date=self.starting_date,batch=(self.c//10)+1)
+            pickle_file_name = 'owned_game_{starting_date}_{batch}.pickle'.format(starting_date=self.starting_date,batch=(i//10)+1)
             pickle.dump(self.user_game_info, handle, protocol=pickle.HIGHEST_PROTOCOL)
