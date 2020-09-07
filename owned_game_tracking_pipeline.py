@@ -43,12 +43,8 @@ class GetOwnedGames:
         r = requests.get(query_get_game)
         data = json.loads(r.text)
         if data['response']:
-            self.c += 1
-            self.cn = 0
             self.user_game_info.append((steamid,data['response']))
-        else:
-            self.cn += 1
-        time.sleep(self.speed)
+
         
     def query_till_limit(self,limit:int,steamid:str):
         """
