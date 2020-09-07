@@ -44,6 +44,7 @@ class GetOwnedGames:
         data = json.loads(r.text)
         if data['response']:
             self.user_game_info.append((steamid,data['response']))
+            time.sleep(2)
 
         
     def query_till_limit(self,limit:int,steamid:str):
@@ -62,12 +63,12 @@ class GetOwnedGames:
                 attempts += 1
                 if attempts == (limit-1):
                     logging.info('reach limit at i ={i}'.format(i=limit))
-                    time.sleep(600)
+                    time.sleep(601)
                 elif attempts == 1:
-                    time.sleep(10)
+                    time.sleep(300)
                 else:
                     logging.info('{n}th attempt for player {steamid}'.format(n=attempts,steamid=steamid))
-                    time.sleep(210)
+                    time.sleep(300)
 
     
     def run(self):
@@ -79,8 +80,8 @@ class GetOwnedGames:
         # no response count
         for steamid in self.steamids:
             self.query_till_limit(5,steamid)
-            if i % 10 == 0:
-                pickle_file_name = 'owned_game_{starting_date}_{batch}.pickle'.format(starting_date=self.starting_date,batch=i//10)
+            if i % 100 == 0:
+                pickle_file_name = 'owned_game_{starting_date}_{batch}.pickle'.format(starting_date=self.starting_date,batch=i//100)
                 pickle_file_path = 'data/' + pickle_file_name
                 with open(pickle_file_path, 'wb') as handle:
                     pickle.dump(self.user_game_info, handle, protocol=pickle.HIGHEST_PROTOCOL)
