@@ -79,8 +79,8 @@ class GetOwnedGames:
         # no response count
         for steamid in self.steamids:
             self.query_till_limit(5,steamid)
-            if self.c % 10 == 0:
-                pickle_file_name = 'owned_game_{starting_date}_{batch}.pickle'.format(starting_date=self.starting_date,batch=self.c//10)
+            if i % 10 == 0:
+                pickle_file_name = 'owned_game_{starting_date}_{batch}.pickle'.format(starting_date=self.starting_date,batch=i//10)
                 pickle_file_path = 'data/' + pickle_file_name
                 with open(pickle_file_path, 'wb') as handle:
                     pickle.dump(self.user_game_info, handle, protocol=pickle.HIGHEST_PROTOCOL)
