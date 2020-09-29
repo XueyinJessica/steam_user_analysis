@@ -3,7 +3,8 @@
 ## Welcome!
 This is a project aiming to collect data from steam. I sampled Steamid and collected player information, selected US players, and got their game inventory. I use this data to analyze game similarity and player behavior.
 
-YOU NEED A Steam API TO RUN THE SCRIPT. Check steam doc [here](https://steamcommunity.com/dev).
+YOU NEED A Steam API KEY TO RUN THE SCRIPT. 
+You can check steam doc and get a key [here](https://steamcommunity.com/dev).
 
 ## Run The Scripts
 ### Sample Steamid
